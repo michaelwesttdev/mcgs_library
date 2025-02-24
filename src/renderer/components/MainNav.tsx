@@ -39,7 +39,7 @@ export default function MainNav({}: Props) {
         </div>
 
         {!collapsed &&
-          (subLinks ? (
+          (subLinks && activeLink.includes(path) ? (
             <div className='pl-3 w-full'>
               {subLinks.map((subLink) => (
                 <SideBarLink iconSize={20} key={subLink.path} link={subLink} />
