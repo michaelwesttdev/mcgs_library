@@ -25,10 +25,11 @@ export default function MainNav({}: Props) {
       <Link
         to={path}
         onClick={() => setActiveLink(path)}
-        className={`flex flex-col rounded-md items-center justify-center gap-2 w-full p-1 transition-all ${
-          checkActive(path) && "text-blue-700 bg-gray-300"
-        }`}>
-        <div className='flex items-center justify-center gap-2 w-full'>
+        className={`flex flex-col rounded-md items-center justify-center gap-2 w-full p-1 transition-all `}>
+        <div
+          className={`flex items-center justify-center gap-2 w-full ${
+            checkActive(path) && "text-blue-700 bg-gray-300"
+          }`}>
           <Icon size={iconSize} />
           {!collapsed && (
             <div className='flex items-center gap-2 flex-grow'>
