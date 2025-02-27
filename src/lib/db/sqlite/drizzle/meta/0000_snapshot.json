@@ -1,0 +1,516 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "b7811696-2801-4f13-9f2a-1d56d73e0906",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "authors": {
+      "name": "authors",
+      "columns": {
+        "authorId": {
+          "name": "authorId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "authors_authorId_unique": {
+          "name": "authors_authorId_unique",
+          "columns": [
+            "authorId"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "book_copies": {
+      "name": "book_copies",
+      "columns": {
+        "copy_id": {
+          "name": "copy_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "book_id": {
+          "name": "book_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'available'"
+        },
+        "copy_number": {
+          "name": "copy_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "book_copies_copy_id_unique": {
+          "name": "book_copies_copy_id_unique",
+          "columns": [
+            "copy_id"
+          ],
+          "isUnique": true
+        },
+        "book_copies_copy_number_unique": {
+          "name": "book_copies_copy_number_unique",
+          "columns": [
+            "copy_number"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "book_copies_book_id_main_books_bookId_fk": {
+          "name": "book_copies_book_id_main_books_bookId_fk",
+          "tableFrom": "book_copies",
+          "tableTo": "main_books",
+          "columnsFrom": [
+            "book_id"
+          ],
+          "columnsTo": [
+            "bookId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "borrowings": {
+      "name": "borrowings",
+      "columns": {
+        "borrowing_id": {
+          "name": "borrowing_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "book_copy_id": {
+          "name": "book_copy_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "borrower_id": {
+          "name": "borrower_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "borrow_date": {
+          "name": "borrow_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'2025-02-27'"
+        },
+        "return_date": {
+          "name": "return_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'2025-02-27'"
+        },
+        "is_returned": {
+          "name": "is_returned",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {
+        "borrowings_borrowing_id_unique": {
+          "name": "borrowings_borrowing_id_unique",
+          "columns": [
+            "borrowing_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "borrowings_book_copy_id_book_copies_copy_id_fk": {
+          "name": "borrowings_book_copy_id_book_copies_copy_id_fk",
+          "tableFrom": "borrowings",
+          "tableTo": "book_copies",
+          "columnsFrom": [
+            "book_copy_id"
+          ],
+          "columnsTo": [
+            "copy_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "borrowings_borrower_id_students_student_id_fk": {
+          "name": "borrowings_borrower_id_students_student_id_fk",
+          "tableFrom": "borrowings",
+          "tableTo": "students",
+          "columnsFrom": [
+            "borrower_id"
+          ],
+          "columnsTo": [
+            "student_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "categories": {
+      "name": "categories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "categories_id_unique": {
+          "name": "categories_id_unique",
+          "columns": [
+            "id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "class_teacher_assignment": {
+      "name": "class_teacher_assignment",
+      "columns": {
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "academic_level": {
+          "name": "academic_level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 1
+        },
+        "class": {
+          "name": "class",
+          "type": "text(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "class_teacher_assignment_class_id_unique": {
+          "name": "class_teacher_assignment_class_id_unique",
+          "columns": [
+            "class_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "main_books": {
+      "name": "main_books",
+      "columns": {
+        "bookId": {
+          "name": "bookId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "author": {
+          "name": "author",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "isbn": {
+          "name": "isbn",
+          "type": "text(13)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "publisher": {
+          "name": "publisher",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "published_year": {
+          "name": "published_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "language": {
+          "name": "language",
+          "type": "text(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "main_books_bookId_unique": {
+          "name": "main_books_bookId_unique",
+          "columns": [
+            "bookId"
+          ],
+          "isUnique": true
+        },
+        "main_books_isbn_unique": {
+          "name": "main_books_isbn_unique",
+          "columns": [
+            "isbn"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "main_books_author_authors_authorId_fk": {
+          "name": "main_books_author_authors_authorId_fk",
+          "tableFrom": "main_books",
+          "tableTo": "authors",
+          "columnsFrom": [
+            "author"
+          ],
+          "columnsTo": [
+            "authorId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "main_books_category_categories_id_fk": {
+          "name": "main_books_category_categories_id_fk",
+          "tableFrom": "main_books",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "students": {
+      "name": "students",
+      "columns": {
+        "student_id": {
+          "name": "student_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "students_student_id_unique": {
+          "name": "students_student_id_unique",
+          "columns": [
+            "student_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "students_class_id_class_teacher_assignment_class_id_fk": {
+          "name": "students_class_id_class_teacher_assignment_class_id_fk",
+          "tableFrom": "students",
+          "tableTo": "class_teacher_assignment",
+          "columnsFrom": [
+            "class_id"
+          ],
+          "columnsTo": [
+            "class_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "teachers": {
+      "name": "teachers",
+      "columns": {
+        "teacher_id": {
+          "name": "teacher_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "prefix": {
+          "name": "prefix",
+          "type": "text(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Mr.'"
+        },
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "teachers_teacher_id_unique": {
+          "name": "teachers_teacher_id_unique",
+          "columns": [
+            "teacher_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "teachers_class_id_class_teacher_assignment_class_id_fk": {
+          "name": "teachers_class_id_class_teacher_assignment_class_id_fk",
+          "tableFrom": "teachers",
+          "tableTo": "class_teacher_assignment",
+          "columnsFrom": [
+            "class_id"
+          ],
+          "columnsTo": [
+            "class_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
