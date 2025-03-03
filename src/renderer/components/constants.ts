@@ -31,7 +31,7 @@ export const nav_links = [
   },
   {
     title: "Books",
-    path: "/books",
+    path: "/books/main",
     Icon: Book,
     subLinks: [
       {

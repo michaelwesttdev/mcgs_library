@@ -1,7 +1,10 @@
-import React from "react";
+import { OverdueBooks } from "./components/overdue-books";
 
-type Props = {};
-
-export default function Overdue({}: Props) {
-  return <div>Overdue</div>;
+export default function OverdueBooksPage() {
+  return (
+    <div className='container mx-auto py-10'>
+      <h1 className='text-3xl font-bold mb-6'>Overdue Books</h1>
+      <OverdueBooks />
+    </div>
+  );
 }

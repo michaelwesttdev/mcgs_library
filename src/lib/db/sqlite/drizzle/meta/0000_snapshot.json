@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b7811696-2801-4f13-9f2a-1d56d73e0906",
+  "id": "2a4874ca-45f9-4d6d-af8e-45ac3acf52f4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "authors": {
@@ -134,7 +134,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-02-27'"
+          "default": "'2025-02-28'"
         },
         "return_date": {
           "name": "return_date",
@@ -149,7 +149,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'2025-02-27'"
+          "default": "'2025-02-28'"
         },
         "is_returned": {
           "name": "is_returned",
@@ -398,8 +398,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
+        "firstName": {
+          "name": "firstName",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lastName": {
+          "name": "lastName",
           "type": "text(255)",
           "primaryKey": false,
           "notNull": true,
@@ -409,8 +416,9 @@
           "name": "class_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'null'"
         }
       },
       "indexes": {

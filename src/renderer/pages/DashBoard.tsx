@@ -20,6 +20,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useBooks } from "../hooks/use-books";
+import { useNavigate } from "react-router";
 
 // Sample data for the chart
 const borrowingData = [
@@ -34,6 +36,8 @@ const borrowingData = [
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const { totalBooks, totalOverdue } = useBooks();
+  const navigate = useNavigate();
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -50,7 +54,9 @@ const Dashboard = () => {
       {/* Quick Actions Bar */}
       <div className='bg-white border-b shadow-sm p-4'>
         <div className='max-w-7xl mx-auto flex gap-4 overflow-x-auto'>
-          <button className='flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors'>
+          <button
+            onClick={() => navigate("/books/lend")}
+            className='flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors'>
             <Book className='w-5 h-5 text-blue-600' />
             <span>Issue Book</span>
           </button>
@@ -62,7 +68,9 @@ const Dashboard = () => {
             <UserCheck className='w-5 h-5 text-purple-600' />
             <span>Add Member</span>
           </button>
-          <button className='flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors'>
+          <button
+            onClick={() => navigate("/books/add")}
+            className='flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors'>
             <BookOpen className='w-5 h-5 text-orange-600' />
             <span>Add Book</span>
           </button>
@@ -80,7 +88,7 @@ const Dashboard = () => {
                   <p className='text-sm font-medium text-gray-600'>
                     Total Books
                   </p>
-                  <p className='text-2xl font-bold'>12,458</p>
+                  <p className='text-2xl font-bold'>{totalBooks}</p>
                 </div>
                 <div className='p-3 bg-blue-100 rounded-full'>
                   <Book className='w-6 h-6 text-blue-600' />
@@ -123,19 +131,19 @@ const Dashboard = () => {
             <CardContent className='pt-6'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <p className='text-sm font-medium text-gray-600'>
-                    Books Due Today
-                  </p>
-                  <p className='text-2xl font-bold'>28</p>
+                  <p className='text-sm font-medium text-gray-600'>Books Due</p>
+                  <p className='text-2xl font-bold'>{totalOverdue}</p>
                 </div>
                 <div className='p-3 bg-orange-100 rounded-full'>
                   <Calendar className='w-6 h-6 text-orange-600' />
                 </div>
               </div>
-              <div className='mt-4 flex items-center text-sm text-orange-600'>
-                <AlertCircle className='w-4 h-4 mr-1' />
-                <span>Requires attention</span>
-              </div>
+              {totalOverdue >= 1 && (
+                <div className='mt-4 flex items-center text-sm text-orange-600'>
+                  <AlertCircle className='w-4 h-4 mr-1' />
+                  <span>Requires attention</span>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -146,14 +154,14 @@ const Dashboard = () => {
                   <p className='text-sm font-medium text-gray-600'>
                     Overdue Books
                   </p>
-                  <p className='text-2xl font-bold'>15</p>
+                  <p className='text-2xl font-bold'>{totalOverdue}</p>
                 </div>
                 <div className='p-3 bg-red-100 rounded-full'>
                   <AlertCircle className='w-6 h-6 text-red-600' />
                 </div>
               </div>
               <div className='mt-4 flex items-center text-sm text-red-600'>
-                <span>Total fines: $125.50</span>
+                <span>Total fines: ${(totalOverdue * 10).toFixed(2)}</span>
               </div>
             </CardContent>
           </Card>

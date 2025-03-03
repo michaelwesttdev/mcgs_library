@@ -1,10 +1,5 @@
-import { useState } from "react";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,41 +9,73 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { useForm } from "react-hook-form";
-import type { Student, StudentFormData } from "./types";
+import { Class, Student } from "@/lib/types/db_entities";
+import { ClassSelect } from "./class-select";
+import { toast } from "sonner";
+import { nanoid } from "nanoid";
 
 interface StudentFormProps {
   initialData?: Student;
-  onSubmit: (data: StudentFormData) => Promise<void>;
+  type: "update" | "create";
+  onDone?: () => void;
 }
 
-export function StudentForm({ initialData, onSubmit }: StudentFormProps) {
-  const form = useForm<StudentFormData>({
+export function StudentForm({ initialData, type }: StudentFormProps) {
+  const [classes, setClasses] = useState<Class[]>([]);
+  const form = useForm<Student>({
     defaultValues: initialData || {
-      name: "",
-      email: "",
-      grade: "",
-      enrollmentDate: new Date().toISOString(),
+      studentId: "",
+      firstName: "",
+      lastName: "",
+      classId: "",
     },
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit(data: StudentFormData) {
+  const [isLoading, setIsLoading] = useState(false);
+  const onAddClass = async (newClass: Omit<Class, "classId">) => {
+    // In a real app, you would save this to your database and get back the ID
+    const classId = nanoid();
+    const createdClass: Class = {
+      ...newClass,
+      classId,
+    };
+
+    try {
+      const ok = await window.api.classes.addClass(createdClass);
+      if (!ok) {
+        throw new Error();
+      }
+      await getClasses();
+      form.setValue("classId", classId);
+      return createdClass;
+    } catch (error) {
+      console.log(error);
+      toast("Could Not Create Class");
+    }
+  };
+
+  async function newStudent(data: Student) {
     try {
       setIsLoading(true);
-      await onSubmit(data);
+      const ok = await window.api.students.addStudent(data);
+      if (!ok) {
+        throw new Error("Something went wrong");
+      }
+      toast("Student added successfully");
+      form.reset();
+    } catch (error) {
+      toast("something went wrong");
+      console.log(error);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  async function updateStudent(data: Student) {
+    try {
+      setIsLoading(true);
+      await window.api.students.updateStudent(data);
       form.reset();
     } catch (error) {
       console.error(error);
@@ -56,18 +83,40 @@ export function StudentForm({ initialData, onSubmit }: StudentFormProps) {
       setIsLoading(false);
     }
   }
+  async function handleSubmit(data: Student) {
+    switch (type) {
+      case "create":
+        newStudent(data);
+        break;
+      case "update":
+        updateStudent(data);
+        break;
+    }
+  }
+  async function getClasses() {
+    try {
+      const res = await window.api.classes.getAllClasses();
+      setClasses(res);
+    } catch (error) {
+      console.log(error);
+      toast("error fetching classes");
+    }
+  }
+  useEffect(() => {
+    getClasses();
+  }, []);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
         <FormField
           control={form.control}
-          name='name'
+          name='firstName'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder='John Doe' {...field} />
+                <Input placeholder='John' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,12 +124,12 @@ export function StudentForm({ initialData, onSubmit }: StudentFormProps) {
         />
         <FormField
           control={form.control}
-          name='email'
+          name='lastName'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input type='email' placeholder='john@example.com' {...field} />
+                <Input placeholder='Doe' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,65 +137,18 @@ export function StudentForm({ initialData, onSubmit }: StudentFormProps) {
         />
         <FormField
           control={form.control}
-          name='grade'
+          name='classId'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Grade</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select grade' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value='9'>Grade 9</SelectItem>
-                  <SelectItem value='10'>Grade 10</SelectItem>
-                  <SelectItem value='11'>Grade 11</SelectItem>
-                  <SelectItem value='12'>Grade 12</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='enrollmentDate'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <FormLabel>Enrollment Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}>
-                      {field.value ? (
-                        format(new Date(field.value), "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
-                    mode='single'
-                    selected={new Date(field.value)}
-                    onSelect={(date) =>
-                      field.onChange(date?.toISOString() ?? "")
-                    }
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <FormLabel>Class</FormLabel>
+              <FormControl>
+                <ClassSelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  classes={classes}
+                  onAddClass={onAddClass}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

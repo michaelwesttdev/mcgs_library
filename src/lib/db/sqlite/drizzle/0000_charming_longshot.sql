@@ -18,9 +18,9 @@ CREATE TABLE `borrowings` (
 	`borrowing_id` text PRIMARY KEY NOT NULL,
 	`book_copy_id` text NOT NULL,
 	`borrower_id` text NOT NULL,
-	`borrow_date` text DEFAULT '2025-02-27',
+	`borrow_date` text DEFAULT '2025-02-28',
 	`return_date` text,
-	`due_date` text DEFAULT '2025-02-27',
+	`due_date` text DEFAULT '2025-02-28',
 	`is_returned` integer DEFAULT 0,
 	FOREIGN KEY (`book_copy_id`) REFERENCES `book_copies`(`copy_id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`borrower_id`) REFERENCES `students`(`student_id`) ON UPDATE no action ON DELETE no action
@@ -58,8 +58,9 @@ CREATE UNIQUE INDEX `main_books_bookId_unique` ON `main_books` (`bookId`);--> st
 CREATE UNIQUE INDEX `main_books_isbn_unique` ON `main_books` (`isbn`);--> statement-breakpoint
 CREATE TABLE `students` (
 	`student_id` text PRIMARY KEY NOT NULL,
-	`name` text(255) NOT NULL,
-	`class_id` text NOT NULL,
+	`firstName` text(255) NOT NULL,
+	`lastName` text(255) NOT NULL,
+	`class_id` text DEFAULT 'null',
 	FOREIGN KEY (`class_id`) REFERENCES `class_teacher_assignment`(`class_id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint

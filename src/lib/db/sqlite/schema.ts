@@ -58,19 +58,19 @@ export const borrowings = sqliteTable("borrowings", {
 //students table
 export const students = sqliteTable("students", {
   studentId: text("student_id").primaryKey().unique(),
-  firstName: text("name", { length: 255 }).notNull(),
-  lastName: text("name", { length: 255 }).notNull(),
+  firstName: text("firstName", { length: 255 }).notNull(),
+  lastName: text("lastName", { length: 255 }).notNull(),
   classId: text("class_id")
-    .notNull()
-    .references(() => classes.classId),
+    .references(() => classes.classId)
+    .default(null),
 });
 
 //teachers table
 
-export const teachers = sqliteTable("teachers", {
-  teacherId: text("teacher_id").primaryKey().unique(),
-  firstName: text("name", { length: 255 }).notNull(),
-  lastName: text("name", { length: 255 }).notNull(),
+export const staff = sqliteTable("staff", {
+  staffId: text("staff_id").primaryKey().unique(),
+  firstName: text("firstName", { length: 255 }).notNull(),
+  lastName: text("lastName", { length: 255 }).notNull(),
   prefix: text("prefix", { length: 50 }).default("Mr."),
   classId: text("class_id").references(() => classes.classId),
 });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { nav_links, NavLink } from "./constants";
 import { ChevronRight, Menu, X } from "lucide-react";
 
@@ -7,13 +7,15 @@ type Props = {};
 
 export default function MainNav({}: Props) {
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  const [activeLink, setActiveLink] = useState<string>("/");
 
   function checkActive(path: string) {
     return (
-      activeLink === path || (activeLink === "/" && activeLink.includes(path))
+      loc.pathname === path ||
+      (loc.pathname === "/" && loc.pathname.includes(path))
     );
   }
+  const loc = useLocation();
+
   function SideBarLink({
     link: { title, path, Icon, subLinks },
     iconSize = 30,
@@ -24,11 +26,11 @@ export default function MainNav({}: Props) {
     return (
       <Link
         to={path}
-        onClick={() => setActiveLink(path)}
         className={`flex flex-col rounded-md items-center justify-center gap-2 w-full p-1 transition-all `}>
         <div
           className={`flex items-center justify-center gap-2 w-full ${
-            checkActive(path) && "text-blue-700 bg-gray-300"
+            checkActive(path) &&
+            "text-blue-700 bg-gray-300 p-1 rounded-md transition-all duration-150"
           }`}>
           <Icon size={iconSize} />
           {!collapsed && (
@@ -40,7 +42,7 @@ export default function MainNav({}: Props) {
         </div>
 
         {!collapsed &&
-          (subLinks && activeLink.includes(path) ? (
+          (subLinks && loc.pathname.includes(path) ? (
             <div className='pl-3 w-full'>
               {subLinks.map((subLink) => (
                 <SideBarLink iconSize={20} key={subLink.path} link={subLink} />
